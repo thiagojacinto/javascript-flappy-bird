@@ -16,6 +16,14 @@ const bird = {
   x: 10,
   y: 50,
 
+  gravity: 0.25,
+  velocity: 0,
+  // function to control movement
+  moviment() {
+    this.velocity = this.velocity + this.gravity; // updates velocity
+    this.y = this.y + this.velocity // updates position with velocity
+  },
+
   draw() {
     // Drawing inside canvas:
     context.drawImage(
@@ -91,9 +99,11 @@ const background = {
 
 // Recursive function to draw
 function loop() {
+  bird.moviment();
+
   background.draw();
-  bird.draw();
   floor.draw();
+  bird.draw();
 
   // Continous loading the image
   requestAnimationFrame(loop)
