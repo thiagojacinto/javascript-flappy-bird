@@ -8,6 +8,26 @@ imageSrc.src = './public/sprites.png';
 const canvas = document.getElementById('game-canvas');
 const context = canvas.getContext('2d');
 
+const getReadyScreen = {
+  srcX: 134,
+  srcY: 0,
+  width: 174,
+  height: 152,
+  x: (canvas.width / 2 ) - 174 / 2,
+  y: 50,
+
+  draw() {
+    // Drawing inside canvas:
+    context.drawImage(
+      imageSrc,
+      getReadyScreen.srcX, getReadyScreen.srcY,     // OriginX, OriginY
+      getReadyScreen.width, getReadyScreen.height,  // Width, Height
+      getReadyScreen.x, getReadyScreen.y,
+      getReadyScreen.width, getReadyScreen.height,
+    );
+  },
+}
+
 const bird = {
   srcX: 0,
   srcY: 0,
@@ -104,6 +124,7 @@ function loop() {
   background.draw();
   floor.draw();
   bird.draw();
+  getReadyScreen.draw();
 
   // Continous loading the image
   requestAnimationFrame(loop)
