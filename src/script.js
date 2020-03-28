@@ -39,7 +39,7 @@ const bird = {
   gravity: 0.25,
   velocity: 0,
   // function to control movement
-  moviment() {
+  movement() {
     this.velocity = this.velocity + this.gravity; // updates velocity
     this.y = this.y + this.velocity // updates position with velocity
   },
@@ -117,17 +117,52 @@ const background = {
   },
 }
 
+// [Game Screens]:
+const Screens = {
+  INITIAL: {
+    draw() {
+      background.draw();
+      floor.draw();
+      bird.draw();
+      getReadyScreen.draw();
+    },
+    updates() {},
+    click() {
+      Screens.setActiveScreen(Screens.GAMING);
+    },
+  },
+
+  GAMING: {
+    draw() {
+      background.draw();
+      floor.draw();
+      bird.draw();
+    },
+    updates() {
+      bird.movement()
+    },
+  }, 
+
+  activeScreen: {},
+  setActiveScreen(screen) {
+    this.activeScreen = screen;
+  },
+}
+
 // Recursive function to draw
 function loop() {
-  bird.moviment();
-
-  background.draw();
-  floor.draw();
-  bird.draw();
-  getReadyScreen.draw();
+  Screens.activeScreen.draw();  
+  Screens.activeScreen.updates();  
 
   // Continous loading the image
   requestAnimationFrame(loop)
 }
 
+// adds a listener of clicks on canvas to START GAME:
+canvas.addEventListener('click', () => {
+  // If there is any `click()` on active screen (canvas), runs that `click()` method:
+  if (Screens.activeScreen.click) Screens.activeScreen.click();
+});
+
+Screens.setActiveScreen(Screens.INITIAL);
 loop(); // Runs loop function
