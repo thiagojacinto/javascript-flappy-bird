@@ -1,0 +1,15 @@
+body {
+  min-height: 100vh;
+  display: flex;
+
+  /* horizontally & vertically centered */
+  justify-content: center;  
+  align-items: center;
+}
+
+#game-canvas {
+  margin: 0 auto; 
+  
+  border: 1px solid gray;
+  display: block;
+}
