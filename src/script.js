@@ -28,6 +28,28 @@ const getReadyScreen = {
   },
 }
 
+
+// GameOver
+const gameOver = {
+  srcX: 134,
+  srcY: 152,
+  width: 226,
+  height: 200,
+  x: (canvas.width / 2 ) - 225 / 2,
+  y: 50,
+
+  draw() {
+    // Drawing inside canvas:
+    context.drawImage(
+      imageSrc,
+      gameOver.srcX, gameOver.srcY,     // OriginX, OriginY
+      gameOver.width, gameOver.height,  // Width, Height
+      gameOver.x, gameOver.y,
+      gameOver.width, gameOver.height,
+    );
+  },
+}
+
 const bird = {
   srcX: 0,
   srcY: 0,
@@ -195,12 +217,36 @@ const Screens = {
       bird.movement();
       pipeSouth.movement();
       pipeNorth.movement();
+
+      if (Screens.GAMEOVER.crashFloor() || Screens.GAMEOVER.crashPipes() ) {
+        Screens.setActiveScreen(Screens.GAMEOVER);
+      }
     },
     click() {
       bird.y = bird.y - 20;
       bird.velocity = 0;
+      console.log(`Bird Y: ${bird.y} & Floor Y: ${floor.y}`);
+
     }
   }, 
+
+  GAMEOVER: {
+    draw() {
+      gameOver.draw();
+    },
+    updates() {},
+    click() {
+      // Clicking after gameOver, will refresh browser
+      location.reload();
+    },
+    crashFloor() {
+      return bird.y + bird.height >= floor.y;
+    },
+    crashPipes() {
+      return false;
+      //TODO: logic of crashing pipes :D
+    },
+  },
 
   activeScreen: {},
   setActiveScreen(screen) {
@@ -222,8 +268,6 @@ canvas.addEventListener('click', () => {
   // If there is any `click()` on active screen (canvas), runs that `click()` method:
   if (Screens.activeScreen.click) Screens.activeScreen.click();
 });
-
-
 
 Screens.setActiveScreen(Screens.INITIAL);
 loop(); // Runs loop function
