@@ -36,7 +36,7 @@ const bird = {
   x: 10,
   y: 50,
 
-  gravity: 0.25,
+  gravity: 0.1,
   velocity: 0,
   // function to control movement
   movement() {
@@ -117,11 +117,62 @@ const background = {
   },
 }
 
+var pipeGap = 130;
+
+const pipeSouth = {
+  srcX: 0,
+  srcY: 169,
+  width: 54,
+  height: 400,
+  x: canvas.width - 54,
+  y: canvas.height - floor.height - pipeGap,
+
+  draw() {
+    // Drawing inside canvas:
+    context.drawImage(
+      imageSrc,
+      pipeSouth.srcX, pipeSouth.srcY,     // OriginX, OriginY
+      pipeSouth.width, pipeSouth.height,  // Width, Height
+      pipeSouth.x, pipeSouth.y,
+      pipeSouth.width, pipeSouth.height,
+    );
+  },
+  movement() {
+    this.x --;
+  }
+}
+
+const pipeNorth = {
+  srcX: 52,
+  srcY: 169,
+  width: 54,
+  height: 400,
+  x: canvas.width - 54,
+  y: - pipeSouth.y,
+
+  draw() {
+    // Drawing inside canvas:
+    context.drawImage(
+      imageSrc,
+      pipeNorth.srcX, pipeNorth.srcY,     // OriginX, OriginY
+      pipeNorth.width, pipeNorth.height,  // Width, Height
+      pipeNorth.x, pipeNorth.y,
+      pipeNorth.width, pipeNorth.height,
+    );
+  },
+  movement() {
+    this.x --;
+  }
+}
+
+
 // [Game Screens]:
 const Screens = {
   INITIAL: {
     draw() {
       background.draw();
+      pipeSouth.draw();
+      pipeNorth.draw();
       floor.draw();
       bird.draw();
       getReadyScreen.draw();
@@ -135,12 +186,20 @@ const Screens = {
   GAMING: {
     draw() {
       background.draw();
+      pipeSouth.draw();
+      pipeNorth.draw();
       floor.draw();
       bird.draw();
     },
     updates() {
-      bird.movement()
+      bird.movement();
+      pipeSouth.movement();
+      pipeNorth.movement();
     },
+    click() {
+      bird.y = bird.y - 20;
+      bird.velocity = 0;
+    }
   }, 
 
   activeScreen: {},
@@ -163,6 +222,8 @@ canvas.addEventListener('click', () => {
   // If there is any `click()` on active screen (canvas), runs that `click()` method:
   if (Screens.activeScreen.click) Screens.activeScreen.click();
 });
+
+
 
 Screens.setActiveScreen(Screens.INITIAL);
 loop(); // Runs loop function
