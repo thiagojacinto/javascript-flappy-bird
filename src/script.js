@@ -200,7 +200,7 @@ const movingPipes = {
     for (let index = 0; index < this.pipes.length; index++) {
       
       // draw:
-      pipeNorth.draw(this.pipes[index].x + 20, - pipeNorth.height + this.pipes[index].y - pipeGap);
+      pipeNorth.draw(this.pipes[index].x, - pipeNorth.height + this.pipes[index].y - pipeGap);
       pipeSouth.draw(this.pipes[index].x, this.pipes[index].y);
 
       // movement of pipes:
