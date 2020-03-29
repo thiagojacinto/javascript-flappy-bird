@@ -149,13 +149,13 @@ const pipeSouth = {
   x: canvas.width - 54,
   y: canvas.height - floor.height - pipeGap,
 
-  draw() {
+  draw(x, y) {
     // Drawing inside canvas:
     context.drawImage(
       imageSrc,
       pipeSouth.srcX, pipeSouth.srcY,     // OriginX, OriginY
       pipeSouth.width, pipeSouth.height,  // Width, Height
-      pipeSouth.x, pipeSouth.y,
+      x, y, // -> Position inputs
       pipeSouth.width, pipeSouth.height,
     );
   },
@@ -172,13 +172,13 @@ const pipeNorth = {
   x: canvas.width - 54,
   y: - pipeSouth.y,
 
-  draw() {
+  draw(x, y) {
     // Drawing inside canvas:
     context.drawImage(
       imageSrc,
       pipeNorth.srcX, pipeNorth.srcY,     // OriginX, OriginY
       pipeNorth.width, pipeNorth.height,  // Width, Height
-      pipeNorth.x, pipeNorth.y,
+      x, y, // -> Position inputs
       pipeNorth.width, pipeNorth.height,
     );
   },
@@ -187,14 +187,45 @@ const pipeNorth = {
   }
 }
 
+const movingPipes = {
+  pipes: [{
+    x: canvas.width - pipeNorth.width,
+    y: canvas.height - floor.height - pipeGap,
+  }],
+
+  DISTANCE_BETWEEN_PAIRS: 200,
+
+  draw() {
+    // Increasing pipes drawings
+    for (let index = 0; index < this.pipes.length; index++) {
+      
+      // draw:
+      pipeNorth.draw(this.pipes[index].x + 20, - pipeNorth.height + this.pipes[index].y - pipeGap);
+      pipeSouth.draw(this.pipes[index].x, this.pipes[index].y);
+
+      // movement of pipes:
+      this.pipes[index].x --;
+      
+      // increase:
+      if (this.pipes[index].x === movingPipes.DISTANCE_BETWEEN_PAIRS) {
+        this.pipes.push({
+          x: canvas.width,
+          y: Math.floor( Math.random()*pipeGap ) + pipeSouth.y,
+        });
+        console.log(`New pipe @ (${this.pipes[index + 1].x}, ${this.pipes[index + 1].y})`); // DEBUG
+        
+      }
+    }
+  }
+}
 
 // [Game Screens]:
 const Screens = {
   INITIAL: {
     draw() {
       background.draw();
-      pipeSouth.draw();
-      pipeNorth.draw();
+      pipeSouth.draw(pipeSouth.x, pipeSouth.y);
+      pipeNorth.draw(pipeNorth.x, pipeNorth.y);
       floor.draw();
       bird.draw();
       getReadyScreen.draw();
@@ -208,15 +239,16 @@ const Screens = {
   GAMING: {
     draw() {
       background.draw();
-      pipeSouth.draw();
-      pipeNorth.draw();
+      // pipeSouth.draw();
+      // pipeNorth.draw();
+      movingPipes.draw();
       floor.draw();
       bird.draw();
     },
     updates() {
       bird.movement();
-      pipeSouth.movement();
-      pipeNorth.movement();
+      // pipeSouth.movement();
+      // pipeNorth.movement();
 
       if (Screens.GAMEOVER.crashFloor() || Screens.GAMEOVER.crashPipes() ) {
         Screens.setActiveScreen(Screens.GAMEOVER);
