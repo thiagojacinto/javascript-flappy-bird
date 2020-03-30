@@ -193,7 +193,7 @@ const movingPipes = {
     y: canvas.height - floor.height - pipeGap,
   }],
 
-  DISTANCE_BETWEEN_PAIRS: 200,
+  DISTANCE_BETWEEN_PAIRS: 190,
 
   draw() {
     // Increasing pipes drawings
@@ -205,6 +205,11 @@ const movingPipes = {
 
       // movement of pipes:
       this.pipes[index].x --;
+
+      // verify collision
+      Screens.GAMEOVER.hasCrashedPipes = Screens.GAMEOVER.crashPipes(index);
+      console.log(`Has it crashed the pipes? ${Screens.GAMEOVER.hasCrashedPipes}`);  // DEBUG
+      
       
       // increase:
       if (this.pipes[index].x === movingPipes.DISTANCE_BETWEEN_PAIRS) {
@@ -250,7 +255,7 @@ const Screens = {
       // pipeSouth.movement();
       // pipeNorth.movement();
 
-      if (Screens.GAMEOVER.crashFloor() || Screens.GAMEOVER.crashPipes() ) {
+      if (Screens.GAMEOVER.crashFloor() || Screens.GAMEOVER.hasCrashedPipes ) {
         Screens.setActiveScreen(Screens.GAMEOVER);
       }
     },
@@ -274,10 +279,22 @@ const Screens = {
     crashFloor() {
       return bird.y + bird.height >= floor.y;
     },
-    crashPipes() {
-      return false;
-      //TODO: logic of crashing pipes :D
+    crashPipes(index) {
+      xAxisVerification = bird.x + bird.width >= movingPipes.pipes[index].x 
+          || bird.x <= movingPipes.pipes[index].x + movingPipes.pipes[index].width;
+        console.log(`Crashed X-Axis: ${xAxisVerification}`);
+          
+        
+      yAxisVerification = bird.y + bird.height >= movingPipes.pipes[index].y
+          || bird.y <= movingPipes.pipes[index].y - pipeGap;
+        console.log(`Crashed Y-Axis: ${yAxisVerification}`);
+
+      // solved:
+      return movingPipes && movingPipes.pipes[index].x ? 
+        xAxisVerification && yAxisVerification
+        : false;
     },
+    hasCrashedPipes: false,
   },
 
   activeScreen: {},
