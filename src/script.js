@@ -139,7 +139,7 @@ const background = {
   },
 }
 
-var pipeGap = 130;
+var pipeGap = 90;
 
 const pipeSouth = {
   srcX: 0,
@@ -193,7 +193,7 @@ const movingPipes = {
     y: canvas.height - floor.height - pipeGap,
   }],
 
-  DISTANCE_BETWEEN_PAIRS: 100,
+  DISTANCE_BETWEEN_PAIRS: 180,
 
   movement() {
     // Increasing pipes drawings
@@ -290,7 +290,7 @@ const Screens = {
           || bird.y <= movingPipes.pipes[index].y - pipeGap;
         console.log(`Crashed Y-Axis: ${yAxisVerification}`);  // DEBUG
 
-      // solved:
+      // Somehow solved @TBD:
       return movingPipes 
       && movingPipes.pipes[index].x > 0 ?
         xAxisVerification && yAxisVerification
