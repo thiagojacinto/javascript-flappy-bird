@@ -193,9 +193,9 @@ const movingPipes = {
     y: canvas.height - floor.height - pipeGap,
   }],
 
-  DISTANCE_BETWEEN_PAIRS: 190,
+  DISTANCE_BETWEEN_PAIRS: 100,
 
-  draw() {
+  movement() {
     // Increasing pipes drawings
     for (let index = 0; index < this.pipes.length; index++) {
       
@@ -207,9 +207,8 @@ const movingPipes = {
       this.pipes[index].x --;
 
       // verify collision
-      Screens.GAMEOVER.hasCrashedPipes = Screens.GAMEOVER.crashPipes(index);
-      console.log(`Has it crashed the pipes? ${Screens.GAMEOVER.hasCrashedPipes}`);  // DEBUG
-      
+      const crashingPipes = Screens.GAMEOVER.crashPipes(index) ? Screens.setActiveScreen(Screens.GAMEOVER) : false;
+      console.log(`Has it crashed the pipes? ${crashingPipes}`);  // DEBUG
       
       // increase:
       if (this.pipes[index].x === movingPipes.DISTANCE_BETWEEN_PAIRS) {
@@ -217,7 +216,7 @@ const movingPipes = {
           x: canvas.width,
           y: Math.floor( Math.random()*pipeGap ) + pipeSouth.y,
         });
-        console.log(`New pipe @ (${this.pipes[index + 1].x}, ${this.pipes[index + 1].y})`); // DEBUG
+        // console.log(`New pipe @ (${this.pipes[index + 1].x}, ${this.pipes[index + 1].y})`); // DEBUG
         
       }
     }
@@ -246,23 +245,25 @@ const Screens = {
       background.draw();
       // pipeSouth.draw();
       // pipeNorth.draw();
-      movingPipes.draw();
+      movingPipes.movement();
       floor.draw();
       bird.draw();
     },
     updates() {
       bird.movement();
+
       // pipeSouth.movement();
       // pipeNorth.movement();
 
-      if (Screens.GAMEOVER.crashFloor() || Screens.GAMEOVER.hasCrashedPipes ) {
+      if (Screens.GAMEOVER.crashFloor()) {
+        console.log("GAME IS OVER, PAL!");  // DEBUG
         Screens.setActiveScreen(Screens.GAMEOVER);
       }
     },
     click() {
       bird.y = bird.y - 20;
       bird.velocity = 0;
-      console.log(`Bird Y: ${bird.y} & Floor Y: ${floor.y}`);
+      // console.log(`Bird Y: ${bird.y} & Floor Y: ${floor.y}`);  // DEBUG
 
     }
   }, 
@@ -282,19 +283,21 @@ const Screens = {
     crashPipes(index) {
       xAxisVerification = bird.x + bird.width >= movingPipes.pipes[index].x 
           || bird.x <= movingPipes.pipes[index].x + movingPipes.pipes[index].width;
-        console.log(`Crashed X-Axis: ${xAxisVerification}`);
+        console.log(`Crashed X-Axis: ${xAxisVerification}`);  // DEBUG
           
         
       yAxisVerification = bird.y + bird.height >= movingPipes.pipes[index].y
           || bird.y <= movingPipes.pipes[index].y - pipeGap;
-        console.log(`Crashed Y-Axis: ${yAxisVerification}`);
+        console.log(`Crashed Y-Axis: ${yAxisVerification}`);  // DEBUG
 
       // solved:
-      return movingPipes && movingPipes.pipes[index].x ? 
+      return movingPipes 
+      && movingPipes.pipes[index].x > 0 ?
         xAxisVerification && yAxisVerification
-        : false;
+        : movingPipes.pipes[index].x + movingPipes.pipes[index].width > 0 ?
+        xAxisVerification && yAxisVerification
+        : false ;
     },
-    hasCrashedPipes: false,
   },
 
   activeScreen: {},
@@ -305,8 +308,8 @@ const Screens = {
 
 // Recursive function to draw
 function loop() {
-  Screens.activeScreen.draw();  
   Screens.activeScreen.updates();  
+  Screens.activeScreen.draw();  
 
   // Continous loading the image
   requestAnimationFrame(loop)
