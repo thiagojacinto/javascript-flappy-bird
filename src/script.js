@@ -206,9 +206,19 @@ const movingPipes = {
       // movement of pipes:
       this.pipes[index].x --;
 
+      // score counting:
+      if (this.pipes[index].x == bird.x) scoreCount.score[scoreCount.size].now++;
+      console.log(`Score now: ${scoreCount.score[scoreCount.size].now}`);
+      const maximum = scoreCount.maximumScore();
+      scoreCount.draw(scoreCount.score[scoreCount.size].now, maximum);
+
       // verify collision
-      const crashingPipes = Screens.GAMEOVER.crashPipes(index) ? Screens.setActiveScreen(Screens.GAMEOVER) : false;
-      console.log(`Has it crashed the pipes? ${crashingPipes}`);  // DEBUG
+      if (Screens.GAMEOVER.crashPipes(index)) {
+        // saves this round score
+        scoreCount.addScore({now: 0, max: scoreCount.score[scoreCount.size].now});
+        // calls gameover screen
+        Screens.setActiveScreen(Screens.GAMEOVER);
+      }
       
       // increase:
       if (this.pipes[index].x === movingPipes.DISTANCE_BETWEEN_PAIRS) {
@@ -220,6 +230,58 @@ const movingPipes = {
         
       }
     }
+  }
+}
+
+// PLAYER SCORE:
+const scoreCount = {
+  
+  score: [
+    {
+      now: 0,
+      max: 0
+    },
+  ], 
+
+  addScore(newScore) {
+    scoreCount.score.push({
+      now: newScore.now,
+      max: this.score.max >= newScore.max ? this.score.max : newScore.max,
+    });
+    this.increaseSize();
+    const max = this.maximumScore();
+    console.log(`Maximum SCORE: ${max}`);
+    
+    window.localStorage.setItem('flappyMaxScore', max);
+  }, 
+
+  size: 0,
+  increaseSize() {this.size++},
+
+  maximumScore() {
+    let result = 0;
+    // compares localStorage info with running max score:
+    if (window.localStorage && window.localStorage.getItem('flappyMaxScore')) {
+      result = this.score[this.size].max > window.localStorage.getItem('flappyMaxScore') ?
+        this.score[this.size].max
+        : window.localStorage.getItem('flappyMaxScore');
+    } else {
+      result = this.score[this.size].max;
+    }
+
+    return result;
+  },
+
+  draw(value, max) {
+
+    context.fillStyle = "#000";
+    context.font = "20px Verdana";
+    context.fillText(
+      `Score: ${value} \n
+      Max: ${max}`,
+      20,
+      20
+    );
   }
 }
 
@@ -256,7 +318,7 @@ const Screens = {
       // pipeNorth.movement();
 
       if (Screens.GAMEOVER.crashFloor()) {
-        console.log("GAME IS OVER, PAL!");  // DEBUG
+        // console.log("GAME IS OVER, PAL!");  // DEBUG
         Screens.setActiveScreen(Screens.GAMEOVER);
       }
     },
@@ -283,12 +345,12 @@ const Screens = {
     crashPipes(index) {
       xAxisVerification = bird.x + bird.width >= movingPipes.pipes[index].x 
           || bird.x <= movingPipes.pipes[index].x + movingPipes.pipes[index].width;
-        console.log(`Crashed X-Axis: ${xAxisVerification}`);  // DEBUG
+        // console.log(`Crashed X-Axis: ${xAxisVerification}`);  // DEBUG
           
         
       yAxisVerification = bird.y + bird.height >= movingPipes.pipes[index].y
           || bird.y <= movingPipes.pipes[index].y - pipeGap;
-        console.log(`Crashed Y-Axis: ${yAxisVerification}`);  // DEBUG
+        // console.log(`Crashed Y-Axis: ${yAxisVerification}`);  // DEBUG
 
       // Somehow solved @TBD:
       return movingPipes 
