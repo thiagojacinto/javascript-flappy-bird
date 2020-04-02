@@ -58,6 +58,8 @@ const bird = {
   x: 10,
   y: 50,
 
+  jump: 2,
+
   gravity: 0.1,
   velocity: 0,
   // function to control movement
@@ -323,10 +325,9 @@ const Screens = {
       }
     },
     click() {
-      bird.y = bird.y - 20;
-      bird.velocity = 0;
+      // soften bird jump movement
+      bird.velocity = - bird.jump;
       // console.log(`Bird Y: ${bird.y} & Floor Y: ${floor.y}`);  // DEBUG
-
     }
   }, 
 
