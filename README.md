@@ -11,8 +11,9 @@ So, clone this repo. On your browser, open the `index.html` file following these
 To test it, please just go directly to the [CodePen.io](https://codepen.io/thiagojacinto/project/full/DKmErY) project's link.
 
 ## Printscreens
-- Get Ready screen:
-![Get Ready screen]()
+- Get Ready:
+
+![Get Ready screen](https://github.com/thiagojacinto/javascript-flappy-bird/blob/master/promo/getReady.png?raw=true)
 
 ## Contributing to javascript-flappy-bird
 
