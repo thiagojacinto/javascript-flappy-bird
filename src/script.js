@@ -1,5 +1,9 @@
-console.log(" - - [@thiagojacinto] Flappy Bird - - ");  // Just a title inside console
+/**
+ * Import a light-weight localStorage simulator module.
+ */
+import * as storage from "./storage";
 
+console.log(" - - [@thiagojacinto] Flappy Bird - - ");  // Just a title inside console
 // Handle sprites.png image source file:
 const imageSrc = new Image();
 imageSrc.src = './public/sprites.png';
@@ -256,7 +260,11 @@ const scoreCount = {
 
     try {
       // Saves into localStorage, IF POSSIBLE:
-      window.localStorage.setItem('flappyMaxScore', max);
+      // window.localStorage.setItem('flappyMaxScore', max);
+
+      // Using the light storage lib:
+      storage.local.setItem('flappyMaxScore', max);
+
     } catch (error) {
       console.log(`Error: ${error}`);
       this.sessionMax = max;
@@ -277,7 +285,10 @@ const scoreCount = {
   maximumScore() {
     // compares localStorage info with running max score:
     try {
-      return this.verifyMax(this.score[this.size].max, window.localStorage.getItem('flappyMaxScore'));
+      // Using default browser's localStorage:
+      // return this.verifyMax(this.score[this.size].max, window.localStorage.getItem('flappyMaxScore'));
+      // Using the storage lib:
+      return this.verifyMax(this.score[this.size].max, storage.local.getItem('flappyMaxScore'));
     } catch {   // If access to LocalStorage is denied, use a global local variable:
       return this.verifyMax(this.score[this.size].max, this.sessionMax);
     }
