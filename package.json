@@ -1,0 +1,28 @@
+{
+  "name": "javascript-flappy-bird",
+  "version": "0.2.0",
+  "description": "Javascript implemenation of the famous Flappy Bird game. For learning purposes",
+  "main": "./src/script.js",
+  "dependencies": {
+    "storage-factory": "^0.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thiagojacinto/javascript-flappy-bird.git"
+  },
+  "keywords": [
+    "javascript",
+    "html5",
+    "canvas"
+  ],
+  "author": "Thiago Jacinto",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thiagojacinto/javascript-flappy-bird/issues"
+  },
+  "homepage": "https://github.com/thiagojacinto/javascript-flappy-bird#readme"
+}
