@@ -253,25 +253,34 @@ const scoreCount = {
     this.increaseSize();
     const max = this.maximumScore();
     console.log(`Maximum SCORE: ${max}`);
-    
-    window.localStorage.setItem('flappyMaxScore', max);
+
+    try {
+      // Saves into localStorage, IF POSSIBLE:
+      window.localStorage.setItem('flappyMaxScore', max);
+    } catch (error) {
+      console.log(`Error: ${error}`);
+      this.sessionMax = max;
+    }
   }, 
 
   size: 0,
   increaseSize() {this.size++},
 
-  maximumScore() {
-    let result = 0;
-    // compares localStorage info with running max score:
-    if (window.localStorage && window.localStorage.getItem('flappyMaxScore')) {
-      result = this.score[this.size].max > window.localStorage.getItem('flappyMaxScore') ?
-        this.score[this.size].max
-        : window.localStorage.getItem('flappyMaxScore');
-    } else {
-      result = this.score[this.size].max;
-    }
+  // A way to avoid using unnecessary localStorage: 
+  sessionMax: 0,
+  verifyMax(value, reference) {
+    return reference > value ?
+      reference
+      : value;
+  },
 
-    return result;
+  maximumScore() {
+    // compares localStorage info with running max score:
+    try {
+      return this.verifyMax(this.score[this.size].max, window.localStorage.getItem('flappyMaxScore'));
+    } catch {   // If access to LocalStorage is denied, use a global local variable:
+      return this.verifyMax(this.score[this.size].max, this.sessionMax);
+    }
   },
 
   draw(value, max) {
