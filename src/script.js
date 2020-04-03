@@ -364,12 +364,12 @@ const Screens = {
       return bird.y + bird.height >= floor.y;
     },
     crashPipes(index) {
-      xAxisVerification = bird.x + bird.width >= movingPipes.pipes[index].x 
+      let xAxisVerification = bird.x + bird.width >= movingPipes.pipes[index].x 
           || bird.x <= movingPipes.pipes[index].x + movingPipes.pipes[index].width;
         // console.log(`Crashed X-Axis: ${xAxisVerification}`);  // DEBUG
           
         
-      yAxisVerification = bird.y + bird.height >= movingPipes.pipes[index].y
+      let yAxisVerification = bird.y + bird.height >= movingPipes.pipes[index].y
           || bird.y <= movingPipes.pipes[index].y - pipeGap;
         // console.log(`Crashed Y-Axis: ${yAxisVerification}`);  // DEBUG
 
